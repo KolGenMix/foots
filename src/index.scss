@@ -1,11 +1,17 @@
 body {
   margin: 0;
-  font-family: system-ui;
+  font-family: 'Inter', system-ui;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e7f6ff;
 
 }
+
+* {
+  font-family: 'Inter', system-ui;
+}
+
+
 
 .wrapper {
   background: #ffffff;

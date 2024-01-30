@@ -1,11 +1,14 @@
 
 import './App.scss';
 import 'macro-css';
-import Card from './components/Card';
-import Header from './components/Header';
-import Driwer from './components/Driwer';
+import Card from './components/Card/Card';
+import Header from './components/Header/Header';
+import Driwer from './components/Driwer/Driwer';
 
-
+const arr = [
+  { name: 'Мужские кроссовки Nike Blazer Mid Suede', imageUrl: './sneakers/1.jpg', price: 12999 },
+  { name: 'Мужские кроссовки Nike Air Max', imageUrl: './sneakers/2.jpg', price: 15600 }
+]
 
 function App() {
   return (
@@ -29,8 +32,16 @@ function App() {
           </div>
         </div>
 
-        <div className='d-flex justify-between '>
-          <Card />
+        <div className='d-flex justify-between '>{
+          arr.map((obj) =>
+          (
+            <Card
+              name={obj.name}
+              imageUrl={obj.imageUrl}
+              price={obj.price}
+            />
+          ))}
+
 
         </div>
       </div>

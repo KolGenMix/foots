@@ -1,7 +1,7 @@
 import './Header.scss';
 
 
-const Header = () => {
+const Header = (props) => {
     return (<header>
         <div className='headerLeft'>
             <img width={40} height={40} src="/img/logo.png" alt='logo' />
@@ -12,7 +12,7 @@ const Header = () => {
         </div>
 
         <ul className='headerRight'>
-            <li className='mr-30'>
+            <li onClick={props.onClickCart} className='mr-30 cu-p'>
                 <img className='mr-5' width={18} height={18} src='/img/cart.svg' alt='Cart' />
                 <span>1205 руб</span>
             </li>

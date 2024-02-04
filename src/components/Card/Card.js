@@ -1,16 +1,21 @@
+import React from 'react'
 import './Card.scss';
 
 
 const Card = (props) => {
+    const [isAdded, setIsAdded] = React.useState(false);
+    const onClickPlus = () => setIsAdded(!isAdded);
+
+
     return (
         <div className='card'>
-            <div className='favority'>
+            <div className='favority' onClick={props.onFavority}>
                 <img src='/img/liked.svg' alt='Liked' />
             </div>
             <img width={133} height={112} src={props.imageUrl} alt='foot1' />
 
 
-            <h5>{props.name}
+            <h5>{props.title}
             </h5>
 
             <div className='cardBottom d-flex justify-between align-center'>
@@ -20,7 +25,9 @@ const Card = (props) => {
                 </div>
 
 
-                <img src='/img/btn-plus.svg' alt='plus' />
+                <img className='cu-p' onClick={onClickPlus}
+                    src={isAdded ? '/img/btn-checked.svg' : '/img/btn-plus.svg'}
+                    alt='plus' />
 
             </div>
         </div>

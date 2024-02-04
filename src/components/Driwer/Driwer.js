@@ -1,9 +1,9 @@
 import './Driwer.scss';
 
-const Driwer = () => {
-    return (
+const Driwer = (props) => {
+    return (<div className='overlay'>
         <div className='driwer'>
-            <h2 className='d-flex justify-between '>Корзина <img className='removeBtn cu-p' src='/img/btn-remove.svg' alt='Remove' /></h2>
+            <h2 className='d-flex justify-between '>Корзина <img onClick={props.onCloseCart} className='removeBtn cu-p' src='/img/btn-remove.svg' alt='Remove' /></h2>
 
 
             <div className='items'>
@@ -53,6 +53,7 @@ const Driwer = () => {
 
 
         </div>
+    </div>
     )
 }
 

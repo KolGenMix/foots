@@ -8,7 +8,7 @@ const Card = (props) => {
 
 
     return (
-        <div className='card'>
+        <div className='card mt-20'>
             <div className='favority' onClick={props.onFavority}>
                 <img src='/img/liked.svg' alt='Liked' />
             </div>

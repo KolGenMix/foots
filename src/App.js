@@ -1,11 +1,12 @@
 import React from 'react';
+import { Route, Routes } from 'react-router-dom'
 import './App.scss';
 import 'macro-css';
 import axios from 'axios';
-import Card from './components/Card/Card';
+// import Card from './components/Card/Card';
 import Header from './components/Header/Header';
 import Driwer from './components/Driwer/Driwer';
-
+import Home from './pages/Home';
 
 // const arr = [
 //   { title: 'Мужские кроссовки Nike Blazer Mid Suede', imageUrl: './sneakers/1.jpg', price: 12999 },
@@ -26,6 +27,7 @@ function App() {
 
   const [items, setItems] = React.useState([]);
   const [cartItems, setCartItems] = React.useState([]);
+  const [favorites, setFavorites] = React.useState([]);
   const [cartOpened, setCartOpened] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
 
@@ -58,6 +60,11 @@ function App() {
     setCartItems((prev) => prev.filter(item => item.id !== id));
   }
 
+  const onAddToFavority = (obj) => {
+    axios.post('https://65c5d368e5b94dfca2e05e27.mockapi.io/favorites', obj);
+    setFavorites((prev) => [...prev, obj]);
+  };
+
   const onChangeSearchInput = (event) => { setSearchValue(event.target.value) };
 
   return (
@@ -67,7 +74,7 @@ function App() {
       {cartOpened ? <Driwer
         items={cartItems}
         onCloseCart={() => setCartOpened(false)}
-        onRemove={() => onCloseCartItem}
+        onRemove={onCloseCartItem}
 
       /> : null}
 
@@ -76,7 +83,20 @@ function App() {
         } />
 
 
-      <div className='content'>
+      <Routes>
+        <Route path="/" exact element={
+          <Home
+            items={items}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            onChangeSearchInput={onChangeSearchInput}
+            onAddToFavority={onAddToFavority}
+            onAddToCard={onAddToCard}
+          />} />
+      </Routes>
+
+
+      {/* <div className='content'>
         <div className='d-flex justify-between align-center mb-40'>
           <h1 className=''>{searchValue ? `Поиск по запросу:'${searchValue}'` : 'Все кроссовки'}</h1>
           <div className=' d-flex search-block'>
@@ -99,15 +119,15 @@ function App() {
 
 
               }
-              onFavority={() =>
-                alert('Добавили в закладки')}
+              onFavority={(obj) => onAddToFavority(obj)
+              }
 
             />
           ))};
 
 
         </div>
-      </div>
+      </div> */}
 
 
     </div>

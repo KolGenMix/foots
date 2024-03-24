@@ -2,18 +2,18 @@ import React from 'react'
 import './Card.scss';
 
 
-const Card = ({ title, imageUrl, price, onFavority, onPlus }) => {
+const Card = ({ id, title, imageUrl, price, onFavority, onPlus, favorited = false }) => {
     const [isAdded, setIsAdded] = React.useState(false);
-    const [isFavority, setIsFavority] = React.useState(false);
+    const [isFavority, setIsFavority] = React.useState(favorited);
 
     const onClickPlus = () => {
         setIsAdded(!isAdded);
-        onPlus({ imageUrl, title, price });
+        onPlus({ id, imageUrl, title, price });
     }
 
     const onClickFavority = () => {
         setIsFavority(!isFavority);
-        onFavority({ imageUrl, title, price });
+        onFavority({ id, imageUrl, title, price });
     }
 
     return (

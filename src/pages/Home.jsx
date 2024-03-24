@@ -16,6 +16,7 @@ function Home({ items, searchValue, setSearchValue, onChangeSearchInput, onAddTo
                 items.filter((item) => item.title.toLowerCase().includes(searchValue.toLocaleLowerCase())).map((item) =>
                 (
                     <Card
+                        id={item.id}
                         key={item.title}
                         title={item.title}
                         imageUrl={item.imageUrl}

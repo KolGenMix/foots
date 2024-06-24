@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 
 
+
 // const arr = [
 //   { title: 'Мужские кроссовки Nike Blazer Mid Suede', imageUrl: './sneakers/1.jpg', price: 12999 },
 //   { title: 'Мужские кроссовки Nike Air Max', imageUrl: './sneakers/2.jpg', price: 15600 },
@@ -25,6 +26,8 @@ import Favorites from './pages/Favorites';
 //   { title: 'Мужские кроссовки Nike Air Max', imageUrl: './sneakers/2.jpg', price: 17600 }
 // ]
 
+export const AppContext = React.createContext({});
+
 function App() {
 
   const [items, setItems] = React.useState([]);
@@ -32,6 +35,7 @@ function App() {
   const [favorites, setFavorites] = React.useState([]);
   const [cartOpened, setCartOpened] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(true);
 
 
   // React.useEffect(() => {
@@ -39,27 +43,69 @@ function App() {
   //     .then((json) => { setItems(json); });
   // }, []);
 
+
+  // сначала
+  // React.useEffect(() => {
+  //   axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/items')
+  //     .then((res) => { setItems(res.data); });
+
+  //   axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/cart')
+  //     .then((res) => {
+  //       setCartItems(res.data);
+  //     });
+
+  //   axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/favorites')
+  //     .then((res) => {
+  //       setFavorites(res.data);
+  //     });
+
+  // }, []);
+
+  //  async  await
+
   React.useEffect(() => {
-    axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/items')
-      .then((res) => { setItems(res.data); });
 
-    axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/cart')
-      .then((res) => {
-        setCartItems(res.data);
-      });
+    async function fetchData() {
+      setIsLoading(true);
 
-    axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/favorites')
-      .then((res) => {
-        setFavorites(res.data);
-      });
+      const cartResponse = await axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/cart');
+      // const favoritesResponse = await axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/favorites');
+      const itemsResponse = await axios.get('https://65c5d368e5b94dfca2e05e27.mockapi.io/items');
 
+      setIsLoading(false);
+
+      setCartItems(cartResponse.data);
+      // setFavorites(favoritesResponse.data);
+      setItems(itemsResponse.data);
+    }
+
+    fetchData();
   }, []);
+
 
   // const onAddToCard = (obj) => { setCartItems((prev) => [...prev, obj]); }
 
-  const onAddToCard = (obj) => {
-    axios.post('https://65c5d368e5b94dfca2e05e27.mockapi.io/cart', obj);
-    setCartItems((prev) => [...prev, obj]);
+  const onAddToCard = async (obj) => {
+
+    try {
+      if (cartItems.find(item => Number(item.id) === Number(obj.id))) {
+        axios.delete(`https://65c5d368e5b94dfca2e05e27.mockapi.io/cart/${obj.id}`);
+        setCartItems((prev) => prev.filter(item => Number(item.id) !== Number(obj.id)));
+
+      } else {
+        const { data } = await
+          axios.post('https://65c5d368e5b94dfca2e05e27.mockapi.io/cart', obj);
+        setCartItems((prev) => [...prev, data]);
+      }
+    }
+    catch (error) {
+      alert('Не получилось')
+    }
+
+
+
+    // axios.post('https://65c5d368e5b94dfca2e05e27.mockapi.io/cart', obj);
+    // setCartItems((prev) => [...prev, obj]);
   };
 
   const onCloseCartItem = (id) => {
@@ -71,7 +117,7 @@ function App() {
     try {
       if (favorites.find(favObj => favObj.id === obj.id)) {
         axios.delete(`https://65c5d368e5b94dfca2e05e27.mockapi.io/favorites/${obj.id}`);
-        // setFavorites((prev) => prev.filter(item => item.id !== obj.id));
+        setFavorites((prev) => prev.filter(item => item.id !== obj.id));
       } else {
         const { data } = await
           axios.post('https://65c5d368e5b94dfca2e05e27.mockapi.io/favorites', obj);
@@ -85,43 +131,52 @@ function App() {
 
   const onChangeSearchInput = (event) => { setSearchValue(event.target.value) };
 
+  const isItermAdded = (id) => { return cartItems.some(obj => Number(obj.id) === Number(id)) }
+
   return (
-    <div className="wrapper clear">
+    <AppContext.Provider value={{ items, cartItems, favorites, isItermAdded, setCartOpened, setCartItems }}>
+
+      <div className="wrapper clear">
 
 
-      {cartOpened ? <Driwer
-        items={cartItems}
-        onCloseCart={() => setCartOpened(false)}
-        onRemove={onCloseCartItem}
+        {cartOpened ? <Driwer
+          items={cartItems}
+          onCloseCart={() => setCartOpened(false)}
+          onRemove={onCloseCartItem}
 
-      /> : null}
-
-      <Header
-        onClickCart={() => setCartOpened(true)
-        } />
+        /> : null}
 
 
-      <Routes>
-        <Route path="/" exact element={
-          <Home
-            items={items}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-            onChangeSearchInput={onChangeSearchInput}
-            onAddToFavority={onAddToFavority}
-            onAddToCard={onAddToCard}
-          />} />
-
-        <Route path='/favorites' exact element={
-          < Favorites
-            items={favorites}
-            onAddToFavority={onAddToFavority}
-          />
-        } />
-      </Routes>
 
 
-      {/* <div className='content'>
+        <Header
+          onClickCart={() => setCartOpened(true)
+          } />
+
+
+        <Routes>
+          <Route path="/" exact element={
+            <Home
+              items={items}
+              cartItems={cartItems}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              onChangeSearchInput={onChangeSearchInput}
+              onAddToFavority={onAddToFavority}
+              onAddToCard={onAddToCard}
+              isLoading={isLoading}
+            />} />
+
+          <Route path='/favorites' exact element={
+            < Favorites
+              items={favorites}
+              onAddToFavority={onAddToFavority}
+            />
+          } />
+        </Routes>
+
+
+        {/* <div className='content'>
         <div className='d-flex justify-between align-center mb-40'>
           <h1 className=''>{searchValue ? `Поиск по запросу:'${searchValue}'` : 'Все кроссовки'}</h1>
           <div className=' d-flex search-block'>
@@ -155,8 +210,9 @@ function App() {
       </div> */}
 
 
-    </div>
 
+      </div>
+    </AppContext.Provider>
 
 
   )

@@ -1,6 +1,43 @@
 import Card from '../components/Card/Card'
+import React from 'react';
+import { AppContext } from '../App';
 
-function Home({ items, searchValue, setSearchValue, onChangeSearchInput, onAddToCard, onAddToFavority }) {
+function Home({ items, cartItems, searchValue, setSearchValue, onChangeSearchInput, onAddToCard, onAddToFavority, isLoading }) {
+
+    const { isItermAdded } = React.useContext(AppContext);
+
+    const renderItem = () => {
+
+
+
+        const filteredItems = items.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        return (isLoading ? [...Array(8)] :
+
+            filteredItems
+        ).map((item, index) => (
+
+            <Card
+                key={index}
+
+                // title={item.title}
+                // imageUrl={item.imageUrl}
+                // price={item.price}
+                added={isItermAdded(item && item.id)}
+                loading={isLoading}
+
+                onPlus={(obj) =>
+                    onAddToCard(obj)
+
+
+                }
+                onFavority={(obj) => onAddToFavority(obj)
+                }
+                {...item}
+
+            />
+        ));
+    };
     return (
         <div className='content'>
             <div className='d-flex justify-between align-center mb-40'>
@@ -12,25 +49,9 @@ function Home({ items, searchValue, setSearchValue, onChangeSearchInput, onAddTo
                 </div>
             </div>
 
-            <div className='d-flex justify-around flex-wrap'>{
-                items.filter((item) => item.title.toLowerCase().includes(searchValue.toLocaleLowerCase())).map((item) =>
-                (
-                    <Card
-                        id={item.id}
-                        key={item.title}
-                        title={item.title}
-                        imageUrl={item.imageUrl}
-                        price={item.price}
-                        onPlus={(obj) =>
-                            onAddToCard(obj)
+            <div className='d-flex justify-around flex-wrap'>
 
-
-                        }
-                        onFavority={(obj) => onAddToFavority(obj)
-                        }
-
-                    />
-                ))};
+                {renderItem()}
 
 
             </div>
